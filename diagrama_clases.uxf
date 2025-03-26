@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>6</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>804</x>
+      <y>666</y>
+      <w>156</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>Vehiculo
+-
+matricula: str
+capacidad: float
+paquetes: list [Paquete]
+disponible: bool
+-
+AsignarPaquete(paquete: Paquete)
+IniciarViaje()
+FinalizarViaje()
+get_vehiculo(): dict[str, Any]
+bg=DARK_GRAY</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>762</x>
+      <y>828</y>
+      <w>108</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>Motorizado
+-
+combustible: Combustible
+bg=LIGHT_GRAY</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>936</x>
+      <y>828</y>
+      <w>78</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>Ecologico
+-
+Material: str
+bg=LIGHT_GRAY</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>762</x>
+      <y>930</y>
+      <w>120</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>Camion
+-
+
+-
+get_camion(): dict[str, Any]
+bg=LIGHT_GRAY</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1116</x>
+      <y>930</y>
+      <w>114</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>BicicletaNormal
+-
+
+-
+get_bicicleta(): dict[str, Any]
+bg=LIGHT_GRAY</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>900</x>
+      <y>930</y>
+      <w>186</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>BicicletaElectrica
+-
+
+-
+get_bicicleta_electrica_eco: dict[str, Any]
+get_bicicleta_electrica_motor: dict[str, Any]
+bg=LIGHT_GRAY</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>786</x>
+      <y>768</y>
+      <w>204</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>160.0;10.0;160.0;50.0;320.0;50.0;320.0;100.0;320.0;50.0;10.0;50.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>648</x>
+      <y>852</y>
+      <w>288</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>240.0;10.0;240.0;130.0;240.0;70.0;460.0;70.0;460.0;130.0;460.0;70.0;10.0;70.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>936</x>
+      <y>852</y>
+      <w>54</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>70.0;10.0;70.0;70.0;10.0;70.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1110</x>
+      <y>222</y>
+      <w>66</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum&gt;&gt;
+CanalEntrada
+-
+IMPRESO
+TELEFONO
+FAX
+bg=PINK</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1098</x>
+      <y>312</y>
+      <w>84</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum&gt;&gt;
+ModalidadEnvio
+-
+DOMICILIADO(5.0)
+CENTRAL(0.0)
+bg=PINK</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>576</x>
+      <y>648</y>
+      <w>126</w>
+      <h>78</h>
+    </coordinates>
+    <panel_attributes>ParteViaje
+-
+parte: str
+viaje: Viaje
+incidenciasViaje: list [str]
+trabajadores: list [Trabajador]
+vehiculo: Vehiculo
+bg=Magenta</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>636</x>
+      <y>588</y>
+      <w>96</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m2= 1
+m1= 1..n</panel_attributes>
+    <additional_attributes>110.0;10.0;110.0;50.0;10.0;50.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>972</x>
+      <y>852</y>
+      <w>198</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0;310.0;70.0;310.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1026</x>
+      <y>504</y>
+      <w>228</w>
+      <h>162</h>
+    </coordinates>
+    <panel_attributes>Empresa
+-
+empresaId: str
+direccion: str
+vehiculos: list [Vehiculo]
+trabajadores: list [Trabajador]
+ingresos: float
+-
+registrarVehiculo(vehiculo: Vehiculo)
+registrarTrabajador(trabajador: Trabajador,salario: float)
+registrarPedido(pedido: Pedido)
+registrarCliente(cliente: Cliente)
+cambiarEstado()
+programarViaje()
+activarTrabajador(trabajador: Trabajador)
+vacacionesTrabajador(trabajador: Trabajador)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>954</x>
+      <y>660</y>
+      <w>198</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2= 1
+m1= 1..n</panel_attributes>
+    <additional_attributes>280.0;10.0;280.0;80.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>876</x>
+      <y>258</y>
+      <w>150</w>
+      <h>138</h>
+    </coordinates>
+    <panel_attributes>Pedido
+-
+pedido: str
+cliente: str
+peso: float
+destino: str
+paquetes: list [Paquete]
+CanalEntrada: CanalEntrada
+TipoEntrega: ModalidadEnvio
+CosteAdicional: float
+-
+get_pedido(): dict[str, Any]
+CalcularCoste()
+AsignarVehiculo(vehiculo: Vehiculo)
+mostrarFactura(): dict[str, Any]
+bg=BLUE</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>978</x>
+      <y>144</y>
+      <w>144</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>Paquete
+-
+paquete_id: str
+peso: float
+destino: str
+-
+get_paquete(): dict[str, Any]
+
+bg=CYAN</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>984</x>
+      <y>198</y>
+      <w>66</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1= 1
+m2=1..n</panel_attributes>
+    <additional_attributes>10.0;100.0;80.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>828</x>
+      <y>120</y>
+      <w>126</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Factura
+-
+- factura_id: str
+- cliente: Cliente
+- pedido: Pedido
+- fecha: datetime
+-
++ print(): str
++ get_factura(): dict[str, Any]
+
+
+bg=CYAN</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>888</x>
+      <y>204</y>
+      <w>36</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1= 1
+m2= 1</panel_attributes>
+    <additional_attributes>30.0;90.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>984</x>
+      <y>390</y>
+      <w>204</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2= 1
+m1= 1..n</panel_attributes>
+    <additional_attributes>290.0;190.0;290.0;110.0;10.0;110.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>624</x>
+      <y>360</y>
+      <w>150</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>Cliente
+-
+
+-
+get_cliente(): dict[str, Any]
+RealizarPedido (productos: list(str))
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>372</x>
+      <y>492</y>
+      <w>186</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>Ayudante
+-
+
+-
+registrarParteViaje(viaje: Viaje): ParteViaje
+bg=ORANGE</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>258</x>
+      <y>504</y>
+      <w>90</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Conductor
+-
+licencia: str
+-
+
+
+bg=ORANGE</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>456</x>
+      <y>414</y>
+      <w>18</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>300</x>
+      <y>372</y>
+      <w>78</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;10.0;10.0;220.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>498</x>
+      <y>198</y>
+      <w>162</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;abstract&gt;&gt;
+Persona
+-
+dni: str
+nombre: str
+edad: int
+direccion: str
+-
+get_persona(): dict[str, Any]
+bg=NONE</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>456</x>
+      <y>282</y>
+      <w>132</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>200.0;10.0;200.0;60.0;10.0;60.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>570</x>
+      <y>282</y>
+      <w>102</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0;150.0;60.0;150.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1020</x>
+      <y>300</y>
+      <w>90</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>130.0;70.0;70.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1020</x>
+      <y>258</y>
+      <w>102</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>150.0;10.0;50.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>696</x>
+      <y>318</y>
+      <w>192</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m2= 1
+m1= 1..n</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0;300.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>630</x>
+      <y>930</y>
+      <w>114</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Furgoneta
+-
+
+-
+get_furgoneta(): dict[str, Any]
+bg=LIGHT_GRAY</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>366</x>
+      <y>342</y>
+      <w>174</w>
+      <h>78</h>
+    </coordinates>
+    <panel_attributes>Trabajador
+-
+trabajador: str
+disponible: bool
+salario: float 
+-
+get_trabajador(): dict[str, Any]
+AsignarViaje()
+CerrarParte()
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>792</x>
+      <y>390</y>
+      <w>174</w>
+      <h>138</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1= 1
+m2=1..n</panel_attributes>
+    <additional_attributes>260.0;10.0;260.0;110.0;10.0;110.0;10.0;210.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>744</x>
+      <y>588</y>
+      <w>156</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1= 1
+m2=1..n</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0;220.0;60.0;220.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>534</x>
+      <y>372</y>
+      <w>150</w>
+      <h>156</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1= 1..n
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;110.0;10.0;110.0;200.0;220.0;200.0;220.0;240.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>492</x>
+      <y>534</y>
+      <w>96</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1= 1..n
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;290.0;140.0;290.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLActor</id>
+    <coordinates>
+      <x>204</x>
+      <y>798</y>
+      <w>48</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>Operador</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLActor</id>
+    <coordinates>
+      <x>132</x>
+      <y>798</y>
+      <w>42</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>Cliente</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>636</x>
+      <y>516</y>
+      <w>180</w>
+      <h>78</h>
+    </coordinates>
+    <panel_attributes>Viaje
+-
+destino: ListaDestinos
+id_viaje: int
+pedidos: list(Pedido)
+
+-
+enviarPedidos(distancia: float): tuple(float)
+get_viaje(): dict[str, Any]
+bg=MAGENTA</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>864</x>
+      <y>510</y>
+      <w>84</w>
+      <h>78</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum&gt;&gt;
+ListaDestinos
+-
+LORCA
+CARTAGENA
+MURCIA
+JUMILLA
+YECLA
+bg=PINK</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>810</x>
+      <y>552</y>
+      <w>66</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>90.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+</diagram>

@@ -103,3 +103,28 @@ class Pedido(Paquete):
         if self.modalidad_envio == ModalidadEnvio.DOMICILIO:
             coste += 10
         return coste
+
+    def asignar_trabajador(self, trabajadores: List[Trabajador]):
+        for trabajador in trabajadores:
+            if isinstance(trabajador, Conductor) and trabajador.disponible:
+                self.conductor = trabajador
+                trabajador.cambiar_disponibilidad(False)
+                print(
+                    f"Conductor {trabajador.nombre} asignado al pedido {self.pedido_id}")
+                return
+
+        raise Exception("No hay conductores disponibles para este pedido.")
+
+    def asignar_vehiculo(self, vehiculo: Vehiculo):
+        if self.conductor is None:
+            raise Exception("No se puede asignar vehículo sin conductor.")
+        for paquete in self.paquetes:
+            vehiculo.asignar_paquete(paquete)
+
+
+class Vehiculo(metaclass=ABCMeta):
+    def __init__(self, matricula: str, capacidad: float, paquetes: list[Paquete], disponible: bool):
+        self.matricula = matricula
+        self.capacidad = capacidad
+        self.paquetes = paquetes
+        self.disponible = disponible

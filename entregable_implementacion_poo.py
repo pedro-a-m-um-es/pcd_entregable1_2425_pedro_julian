@@ -71,3 +71,35 @@ class Ayudante(Trabajador):
 
     def get_ayudante(self) -> str:
         return f"Ayudante: {self.nombre}, Experiencia laboral: {self.experiencia_laboral}, Disponible: {self.disponible}, Salario: {self.salario}, Edad: {self.edad}, DNI: {self.dni}, Dirección: {self.direccion}"
+
+
+class Cliente(Persona):
+    def __init__(self, dni: str, edad: int, nombre: str, direccion: str):
+        Persona.__init__(self, dni, edad, nombre, direccion)
+
+    def get_cliente(self):
+        return f"Cliente: {self.nombre}, Edad: {self.edad}, DNI: {self.dni}, Dirección: {self.direccion}"
+
+
+class Paquete(metaclass=ABCMeta):
+    def __init__(self, paquete_id: str, peso: float, destino: str):
+        self.paquete_id = paquete_id
+        self.peso = peso
+        self.destino = destino
+
+
+class Pedido(Paquete):
+    def __init__(self, pedido_id: str, paquetes: List[Paquete], canal_entrada: CanalEntrada, modalidad_envio: ModalidadEnvio):
+        Paquete.__init__(self, paquete_id, peso, destino)
+        self.pedido = pedido
+        self.cliente = cliente
+        self.paquetes = paquetes
+        self.canal_entrada = canal_entrada
+        self.modalidad_envio = modalidad_envio
+        self.conductor = None
+
+    def calcular_coste(self) -> float:
+        coste = sum(p.peso for p in self.paquetes)
+        if self.modalidad_envio == ModalidadEnvio.DOMICILIO:
+            coste += 10
+        return coste

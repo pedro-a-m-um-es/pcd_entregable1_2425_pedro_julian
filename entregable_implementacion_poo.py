@@ -2,7 +2,6 @@ from abc import ABCMeta, abstractmethod
 from enum import Enum
 
 
-# Enumerados
 class CanalEntrada(Enum):
     IMPRESO = 0
     TELEFONO = 1
@@ -32,3 +31,43 @@ class Persona(metaclass=ABCMeta):
     @abstractmethod
     def get_persona(self):
         pass
+
+
+class Trabajador(Persona):
+    def __init__(self, dni: str, edad: int, nombre: str, direccion: str, disponible: bool, salario: float):
+        Persona.__init__(self, dni, edad, nombre, direccion)
+        self.disponible = disponible
+        self.salario = salario
+
+    def cambiar_disponibilidad(self, disponible: bool):
+        self.disponible = disponible
+    '''
+    def AsignarViaje(self, viaje: 'Viaje'):
+        pass
+    def CerrarParte(self, parte: 'Parte'):
+        pass
+    '''
+    @abstractmethod
+    def get_trabajador(self):
+        pass
+
+
+class Conductor(Trabajador):
+    def __init__(self, dni: str, edad: int, nombre: str, direccion: str, disponible: bool, salario: float, licencia: str):
+        Trabajador.__init__(self, dni, edad, nombre,
+                            direccion, disponible, salario)
+        self.licencia = licencia
+
+    def get_conductor(self) -> str:
+        return f"Conductor: {self.nombre}, Licencia: {self.licencia}, Disponible: {self.disponible}, Salario: {self.salario}, Edad: {self.edad}, DNI: {self.dni}, Dirección: {self.direccion}"
+
+
+# ayudante aún tiene que añadir cosas de herencia de Viaje y ParteViaje
+class Ayudante(Trabajador):
+    def __init__(self, dni: str, edad: int, nombre: str, direccion: str, disponible: bool, salario: float, experiencia_laboral: int):
+        Trabajador.__init__(self, dni, edad, nombre,
+                            direccion, disponible, salario)
+        self.experiencia_laboral = experiencia_laboral
+
+    def get_ayudante(self) -> str:
+        return f"Ayudante: {self.nombre}, Experiencia laboral: {self.experiencia_laboral}, Disponible: {self.disponible}, Salario: {self.salario}, Edad: {self.edad}, DNI: {self.dni}, Dirección: {self.direccion}"

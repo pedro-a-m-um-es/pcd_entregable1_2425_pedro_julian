@@ -450,10 +450,22 @@ class Empresa:
         pedido.id = len(self.pedidos)
         self.pedidos.append(pedido)
 
-    def crearViaje(self, fecha, destino):
-        viaje = Viaje(fecha, destino)
-        viaje.id = len(self.viajes)
-        viaje.asignarVehiculosYPedidos(self)
-        viaje.asignarTrabajador(self)
-        self.viajes.append(viaje)
-        return viaje
+    def listadoVehiculos(self):
+        print('LISTADO DE VEHICULOS')
+        for vehiculo in self.vehiculos:
+            vehiculo.devolverDatos()
+
+    def listadoTrabajadores(self):
+        print('LISTADO DE TRABAJADORES')
+        for trabajador in self.trabajadores:
+            trabajador.devolverDatos()
+
+    def listadoClientes(self):
+        print('LISTADO DE CLIENTES')
+        for cliente in self.clientes:
+            cliente.devolverDatos()
+
+    def listadoPedidos(self):
+        print('LISTADO DE PEDIDOS')
+        for pedido in self.pedidos:
+            pedido.devolverDatos()

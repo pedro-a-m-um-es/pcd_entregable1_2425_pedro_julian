@@ -171,9 +171,9 @@ class Ayudante(Trabajador):
     def __init__(self, nombre, direccion, dni, salario):
         Trabajador.__init__(self, nombre, direccion, dni, salario)
 
-    def registrarParte(self, fecha, causa, lugar):
-        incidencia = Incidencia(fecha, causa, lugar)
-        return incidencia
+    def registrarParte(self, fecha, localizacion, causa):
+        parte = Incidencia(fecha, localizacion, causa)
+        return parte
 
     def devolverDatos(self):
         print('Ayudante:', self.nombre, ', Direccion:', self.direccion,
@@ -234,14 +234,17 @@ class Furgoneta(Vehiculo, Motorizado):
 
 
 class Ecologico(metaclass=ABCMeta):
-    def __init__(self, tipo_energia):
-        self.tipo_energia = tipo_energia
+    def __init__(self, combustible, vatios):
+        self.combustible = combustible
+        self.vatios = vatios
+        # En el caso de la bicicleta electrica, el combustible es electrico y los vatios son los que consume.
+        # En el caso de la bicicleta tradicional, no tiene ni combustible ni vatios, por lo que se le asigna None.
 
 
 class BicicletaTradicional(Vehiculo, Ecologico):
     def __init__(self, matricula, capacidad):
         Vehiculo.__init__(self, matricula, capacidad)
-        Ecologico.__init__(self, tipo_energia=None)
+        Ecologico.__init__(self, combustible=None, vatios=None)
 
     def devolverDatos(self):
         print('Bicicleta tradicional:', self.matricula, ', Capacidad:', self.capacidad,
@@ -249,29 +252,29 @@ class BicicletaTradicional(Vehiculo, Ecologico):
 
 
 class BicicletaElectrica(Vehiculo, Motorizado, Ecologico):
-    def __init__(self, matricula, capacidad, combustible, tipo_energia):
+    def __init__(self, matricula, capacidad, combustible):
         Vehiculo.__init__(self, matricula, capacidad)
         Motorizado.__init__(self, combustible)
-        Ecologico.__init__(self, tipo_energia)
+        Ecologico.__init__(self, combustible, vatios)
 
     def devolverDatos(self):
         print('Bicicleta electrica:', self.matricula, ', Capacidad:', self.capacidad, ', Disponible:',
-              self.disponible, ', Consumo:', self.combustible, ', Tipo de energia:', self.tipo_energia)
+              self.disponible, ', Consumo:', self.combustible, ', Vatios:', self.vatios)
 
 # bien
 
 
 class Incidencia:
     # El id se asigna cuando se añade la incidencia, viendo el tamaño de la lista de incidencias.
-    def __init__(self, fecha, causa, lugar):
+    def __init__(self, fecha, localizacion, causa):
         self.fecha = fecha
+        self.localizacion = localizacion
         self.causa = causa
-        self.lugar = lugar
         self.id = None
 
     def devolverDatos(self):
-        print(
-            f'Incidencia ID: {self.id}, Fecha: {self.fecha}, Causa: {self.causa}, Lugar: {self.lugar}')
+        print('Incidencia:', self.id, ', Fecha:', self.fecha,
+              ', Localizacion:', self.localizacion, ', Causa:', self.causa)
 
 
 class Viaje:
@@ -336,10 +339,23 @@ class Viaje:
                 if len(self.trabajadores) == 2:
                     break
 
-    def registrarIncidencia(self, fecha, causa, lugar):
+    def asignarVehiculosYPedidos(self, Empresa):
+        paquetes_por_destino = []
+        for destino in ListaDestinos:
+            paquetes_por_destino[destino.value] = []
+
+        for pedido in self.pedidos:
+            for paquete in pedido.paquetes:
+                if not paquete.asignado:
+                    paquetes_por_destino[paquete.destino.value].append(paquete):
+                if paquete.destino == destino:
+                    paquete.asignado = True
+
+    def registrarIncidencia(self, fecha, localizacion, causa):
         for trabajador in self.trabajadores:
             if isinstance(trabajador, Ayudante) or isinstance(trabajador, Ambos):
-                incidencia = trabajador.registrarParte(fecha, causa, lugar)
+                incidencia = trabajador.registrarParte(
+                    fecha, localizacion, causa)
                 incidencia.id = len(self.parte)
                 self.parte.append(incidencia)
                 break
@@ -369,7 +385,8 @@ class Empresa:
         self.pedidos = []
         self.viajes = []
 
-    def registrarVehiculo(self, matricula, tipo, combustible=None, tipo_energia=None):
+    # Hemos asignado un peso fijo a cada tipo de vehhiculo.
+    def registrarVehiculo(self, matricula, tipo, combustible=None, vatios=None):
         if tipo == 'CAMION':
             if combustible == Combustible.GASOLINA.value or combustible == Combustible.DIESEL.value:
                 vehiculo = Camion(matricula, 700, combustible)
@@ -390,7 +407,7 @@ class Empresa:
         elif tipo == 'BICICLETA ELECTRICA':
             if combustible == Combustible.ELECTRICO.value:
                 vehiculo = BicicletaElectrica(
-                    matricula, 40, combustible, tipo_energia)
+                    matricula, 40, combustible, vatios)
             else:
                 raise ValueError(
                     f"Combustible '{combustible}' no valido para bicicleta electrica.")
@@ -415,3 +432,7 @@ class Empresa:
         cliente = Cliente(nombre, direccion, dni)
         self.clientes.append(cliente)
         return cliente
+
+    def registrarPedido(self, pedido):
+        pedido.id = len(self.pedidos)
+        self.pedidos.append(pedido)

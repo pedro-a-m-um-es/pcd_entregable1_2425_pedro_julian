@@ -340,16 +340,29 @@ class Viaje:
                     break
 
     def asignarVehiculosYPedidos(self, Empresa):
-        paquetes_por_destino = []
+        paquetes_por_destino = {}
         for destino in ListaDestinos:
             paquetes_por_destino[destino.value] = []
 
         for pedido in self.pedidos:
             for paquete in pedido.paquetes:
                 if not paquete.asignado:
-                    paquetes_por_destino[paquete.destino.value].append(paquete):
-                if paquete.destino == destino:
-                    paquete.asignado = True
+                    paquetes_por_destino[paquete.destino.value].append(paquete)
+
+        for destino, paquetes in paquetes_por_destino.items():
+            carga_total = sum(paquete.peso for paquete in paquetes)
+            for vehiculo in Empresa.vehiculos:
+                if vehiculo.disponible and vehiculo.capacidad >= carga_total:
+                    vehiculo.cambiarDisponibilidad()
+                    self.vehiculo = vehiculo
+                    print(
+                        f"Vehículo asignado: {vehiculo.matricula} con capacidad: {vehiculo.capacidad} para un total de {carga_total}kg a {destino}.")
+
+                    for paquete in paquetes:
+                        if paquete.destino == destino:
+                            paquete.asignado = True
+
+                    break
 
     def registrarIncidencia(self, fecha, localizacion, causa):
         for trabajador in self.trabajadores:
@@ -436,3 +449,11 @@ class Empresa:
     def registrarPedido(self, pedido):
         pedido.id = len(self.pedidos)
         self.pedidos.append(pedido)
+
+    def crearViaje(self, fecha, destino):
+        viaje = Viaje(fecha, destino)
+        viaje.id = len(self.viajes)
+        viaje.asignarVehiculosYPedidos(self)
+        viaje.asignarTrabajador(self)
+        self.viajes.append(viaje)
+        return viaje

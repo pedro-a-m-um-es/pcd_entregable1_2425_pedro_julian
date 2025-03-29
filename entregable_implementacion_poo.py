@@ -310,6 +310,56 @@ class Viaje:
         else:
             print(f'No.')
 
+    def devolverEstadoViaje(self):
+        if self.terminado:
+            print(f'Viaje a {self.destino} terminado.')
+        else:
+            print(f'Viaje a {self.destino} no terminado.')
+
+    def asignarTrabajador(self, Empresa):
+        # Si el destino es Yecla o Jumilla, solo se asigna un conductor o una persona que cumpla ambos roles, porque para esos sitios solo es necesario un trabajador.
+        if (ListaDestinos.YECLA.value or ListaDestinos.JUMILLA.value) == self.destino:
+            for trabajador in Empresa.trabajadores:
+                if (isinstance(trabajador, Conductor) or isinstance(trabajador, Ambos)) and trabajador.disponible:
+                    trabajador.cambiarDisponibilidad()
+                    self.trabajadores.append(trabajador)
+                if len(self.trabajadores) == 1:
+                    break
+        else:  # Pero para Lorca, Cartagena o Murcia, se asignan dos trabajadores, pues si sera necesario un ayudante.
+            for trabajador in Empresa.trabajadores:
+                if (isinstance(trabajador, Conductor) or isinstance(trabajador, Ambos)) and trabajador.disponible:
+                    trabajador.cambiarDisponibilidad()
+                    self.trabajadores.append(trabajador)
+                if (isinstance(trabajador, Ayudante) or isinstance(trabajador, Ambos)) and trabajador.disponible:
+                    trabajador.cambiarDisponibilidad()
+                    self.trabajadores.append(trabajador)
+                if len(self.trabajadores) == 2:
+                    break
+
+    def registrarIncidencia(self, fecha, causa, lugar):
+        for trabajador in self.trabajadores:
+            if isinstance(trabajador, Ayudante) or isinstance(trabajador, Ambos):
+                incidencia = trabajador.registrarParte(fecha, causa, lugar)
+                incidencia.id = len(self.parte)
+                self.parte.append(incidencia)
+                break
+
+    def listadoIncidencias(self):
+        if self.parte:
+            print("LISTADO DE INCIDENCIAS")
+            for incidencia in self.parte:
+                incidencia.devolverDatos()
+        else:
+            print("Sin incidencias registradas.")
+
+    def finalizarViaje(self):
+        for paquete in self.pedidos:
+            paquete.entregado = True
+        for trabajador in self.trabajadores:
+            trabajador.cambiarDisponibilidad()
+        self.vehiculo.cambiarDisponibilidad()
+        self.terminado = True
+
 
 class Empresa:
     def __init__(self):
@@ -318,3 +368,50 @@ class Empresa:
         self.clientes = []
         self.pedidos = []
         self.viajes = []
+
+    def registrarVehiculo(self, matricula, tipo, combustible=None, tipo_energia=None):
+        if tipo == 'CAMION':
+            if combustible == Combustible.GASOLINA.value or combustible == Combustible.DIESEL.value:
+                vehiculo = Camion(matricula, 700, combustible)
+            else:
+                raise ValueError(
+                    f"Combustible '{combustible}' no valido para camion.")
+
+        elif tipo == 'FURGONETA':
+            if combustible == Combustible.GASOLINA.value or combustible == Combustible.DIESEL.value:
+                vehiculo = Furgoneta(matricula, 350, combustible)
+            else:
+                raise ValueError(
+                    f"Combustible '{combustible}' no valido para furgoneta.")
+
+        elif tipo == 'BICICLETA TRADICIONAL':
+            vehiculo = BicicletaTradicional(matricula, 20)
+
+        elif tipo == 'BICICLETA ELECTRICA':
+            if combustible == Combustible.ELECTRICO.value:
+                vehiculo = BicicletaElectrica(
+                    matricula, 40, combustible, tipo_energia)
+            else:
+                raise ValueError(
+                    f"Combustible '{combustible}' no valido para bicicleta electrica.")
+
+        else:
+            raise ValueError(f"Tipo de vehículo '{tipo}' no reconocido.")
+        self.vehiculos.append(vehiculo)
+
+    def registrarTrabajador(self, nombre, direccion, dni, salario, rol):
+        if rol == 'CONDUCTOR':
+            trabajador = Conductor(nombre, direccion, dni, salario)
+        elif rol == 'AYUDANTE':
+            trabajador = Ayudante(nombre, direccion,  dni, salario)
+        elif rol == 'AMBOS':
+            trabajador = Ambos(nombre, direccion, dni, salario)
+        else:
+            raise ValueError(f"Rol de trabajador '{rol}' no valido.")
+        self.trabajadores.append(trabajador)
+        return trabajador
+
+    def registrarCliente(self, nombre, direccion, dni):
+        cliente = Cliente(nombre, direccion, dni)
+        self.clientes.append(cliente)
+        return cliente

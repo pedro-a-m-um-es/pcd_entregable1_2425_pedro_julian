@@ -272,3 +272,49 @@ class Incidencia:
     def devolverDatos(self):
         print(
             f'Incidencia ID: {self.id}, Fecha: {self.fecha}, Causa: {self.causa}, Lugar: {self.lugar}')
+
+
+class Viaje:
+    def __init__(self, fecha, destino):
+        self.id = None
+        self.fecha = fecha
+        self.destino = destino
+        self.pedidos = []
+        self.trabajadores = []
+        self.vehiculo = None
+        self.parte = []
+        self.terminado = False
+
+    def devolverDatos(self):
+        print('Viaje ID:', self.id)
+        print('Fecha inicio:', self.fecha, ', Destino:', self.destino,
+              ', Vehiculo:', self.vehiculo,  ', Finalizado:', Viaje.estadoViaje(self))
+        print('Trabajadores:')
+        for trabajador in self.trabajadores:
+            trabajador.devolverDatos()
+        print('Pedidos:')
+        for pedido in self.pedidos:
+            pedido.devolverDatos()
+
+        if self.terminado:
+            if len(self.parte) == 0:
+                print('Sin parte de incidencias.')
+            else:
+                print('Parte de incidencias:')
+                for incidencia in self.parte:
+                    incidencia.devolverDatos()
+
+    def estadoViaje(self):
+        if self.terminado:
+            print(f'Si.')
+        else:
+            print(f'No.')
+
+
+class Empresa:
+    def __init__(self):
+        self.vehiculos = []
+        self.trabajadores = []
+        self.clientes = []
+        self.pedidos = []
+        self.viajes = []

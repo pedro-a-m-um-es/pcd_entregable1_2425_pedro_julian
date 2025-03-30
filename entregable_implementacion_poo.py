@@ -14,11 +14,11 @@ class ModalidadEnvio(Enum):
 
 
 class ListaDestinos(Enum):
-    LORCA = "LORCA"
-    CARTAGENA = "CARTAGENA"
-    MURCIA = "MURCIA"
-    YECLA = "YECLA"
-    JUMILLA = "JUMILLA"
+    LORCA = 0
+    CARTAGENA = 1
+    MURCIA = 2
+    YECLA = 3
+    JUMILLA = 4
 
 
 class Combustible(Enum):
@@ -61,30 +61,34 @@ class Pedido:
         self.modalidadEnvio = modalidadEnvio
         self.id = None
 
-    def calcularCoste(self):
         # En funcion de a donde vaya el paquete, se le asigna un coste diferente. Sin embargo, si dos o mas paquetes del pedido van a la misma ciudad,
         # solo se cobrara una vez. Ademas, si el envio es a domicilio, se le añade un coste adicional.
         # El peso no afecta al coste.
-        elegido = set()
+
+    def calcularCoste(self):
+        # Mantenemos un conjunto para evitar calcular el coste varias veces por el mismo destino
+        destinos_vistos = set()
         coste = 0
+
+        for paquete in self.paquetes:
+            # Solo sumamos el coste por destino una vez
+            if paquete.destino not in destinos_vistos:
+                destinos_vistos.add(paquete.destino)
+                if paquete.destino == ListaDestinos.LORCA:
+                    coste += 8
+                elif paquete.destino == ListaDestinos.CARTAGENA:
+                    coste += 7
+                elif paquete.destino == ListaDestinos.MURCIA:
+                    coste += 3
+                elif paquete.destino == ListaDestinos.YECLA:
+                    coste += 12
+                elif paquete.destino == ListaDestinos.JUMILLA:
+                    coste += 10
+
+        # Sumamos el coste adicional por envío a domicilio
         if self.modalidadEnvio == ModalidadEnvio.DOMICILIO:
             coste += 5
-        for paquete in self.paquetes:
-            if paquete.destino in elegido:
-                coste += 0
-            else:
-                if paquete.destino == ListaDestinos.LORCA.value:
-                    coste += 8
-                elif paquete.destino == ListaDestinos.CARTAGENA.value:
-                    coste += 7
-                elif paquete.destino == ListaDestinos.MURCIA.value:
-                    coste += 3
-                elif paquete.destino == ListaDestinos.YECLA.value:
-                    coste += 12
-                elif paquete.destino == ListaDestinos.JUMILLA.value:
-                    coste += 10
-                elegido.add(paquete.destino)
-        elegido.clear()
+
         return coste
 
     # Devolvemos los datos del pedido, el canal de entrada y la modalidad de envio, además de los paquetes que contiene.
@@ -123,6 +127,7 @@ class Cliente(Persona):
         Empresa.registrarPedido(pedido)
         self.pedidosmensuales.append(pedido)
         self.carrito.clear()
+        return pedido
 
     def listadoPaquetes(self):
         print('LISTADO DE PAQUETES')
@@ -135,7 +140,7 @@ class Cliente(Persona):
         factura_mensual = 0
         for pedido in self.pedidosmensuales:
             factura_mensual += pedido.calcularCoste()
-        self.pedidosmensuales = []
+        self.pedidosmensuales = []  # Limpiar los pedidos mensuales después de la factura
         return factura_mensual
 
 
@@ -320,7 +325,7 @@ class Viaje:
 
     def asignarTrabajador(self, Empresa):
         # Si el destino es Yecla o Jumilla, solo se asigna un conductor o una persona que cumpla ambos roles, porque para esos sitios solo es necesario un trabajador.
-        if (ListaDestinos.YECLA.value or ListaDestinos.JUMILLA.value) == self.destino:
+        if (ListaDestinos.YECLA or ListaDestinos.JUMILLA) == self.destino:
             for trabajador in Empresa.trabajadores:
                 if (isinstance(trabajador, Conductor) or isinstance(trabajador, Ambos)) and trabajador.disponible:
                     trabajador.cambiarDisponibilidad()
@@ -341,12 +346,12 @@ class Viaje:
     def asignarVehiculosYPedidos(self, Empresa):
         paquetes_por_destino = {}
         for destino in ListaDestinos:
-            paquetes_por_destino[destino.value] = []
+            paquetes_por_destino[destino] = []
 
         for pedido in self.pedidos:
             for paquete in pedido.paquetes:
                 if not paquete.asignado:
-                    paquetes_por_destino[paquete.destino.value].append(paquete)
+                    paquetes_por_destino[paquete.destino].append(paquete)
 
         for destino, paquetes in paquetes_por_destino.items():
             carga_total = sum(paquete.peso for paquete in paquetes)
@@ -396,6 +401,12 @@ class Empresa:
         self.clientes = []
         self.pedidos = []
         self.viajes = []
+
+    def crearViaje(self, fecha, destino):
+        viaje = Viaje(fecha, destino)
+        viaje.id = len(self.viajes)
+        self.viajes.append(viaje)
+        return viaje
 
     # Hemos asignado un peso fijo a cada tipo de vehhiculo.
     def registrarVehiculo(self, matricula, tipo, combustible=None, vatios=None):
@@ -496,7 +507,7 @@ class Empresa:
                     break
 
     def calcularFacturacionMensual(self, cliente):
-        factura_mensual = cliente.getPedidosMensuales()
+        factura_mensual = cliente.facturaMensual()
         print(f'Facturacion mensual de {cliente.nombre}: {factura_mensual}€')
 
     def listadoVehiculosDisponibles(self):
@@ -528,3 +539,82 @@ class Empresa:
         for trabajador in self.trabajadores:
             if trabajador.disponible:
                 disponibles.append(trabajador)
+
+
+if __name__ == "__main__":
+
+    empresa = Empresa()
+
+    # Registrar Cliente
+    cliente = empresa.registrarCliente(
+        "Luis Perez", "C. del Charco", "45633209K")
+
+    # Agregar Paquete al Carrito del Cliente
+    cliente.agregarPaquete(5.50, ListaDestinos.LORCA)
+
+    # Ver listado de paquetes en el carrito
+    cliente.listadoPaquetes()
+
+    # Realizar Pedido
+    cliente.realizarPedido(CanalEntrada.FAX, ModalidadEnvio.DOMICILIO, empresa)
+
+    # Calcular el Coste del Pedido
+    print(f"Coste del pedido: {cliente.pedidosmensuales[0].calcularCoste()} €")
+
+    # Registrar Vehículo
+    empresa.registrarVehiculo("2334 ABC", "CAMION", Combustible.GASOLINA)
+
+    # Registrar Trabajador (Conductor/Ayudante)
+    empresa.registrarTrabajador(
+        "Jose Luis", "Calle Arriba", "987767421N", 1800.0, "AMBOS")
+
+    # Asignar Vehículo y Trabajadores al Viaje
+    viaje = empresa.crearViaje("30-03-2025", ListaDestinos.LORCA)
+    viaje.asignarVehiculosYPedidos(empresa)
+    viaje.asignarTrabajador(empresa)
+
+    # Crear un Viaje
+    # (Esto se hace dentro de la función crearViaje, ya que crea automáticamente el viaje)
+
+    # Finalizar el Viaje
+    viaje.finalizarViaje()
+
+    # Registrar una Incidencia en el Viaje
+    viaje.registrarIncidencia("30-03-2025", "LORCA", "rueda pinchada")
+
+    # Listar Incidencias del Viaje
+    viaje.listadoIncidencias()
+
+    # Mostrar el Estado del Viaje
+    viaje.devolverEstadoViaje()
+
+    # Factura Mensual del Cliente
+    factura = cliente.facturaMensual()
+    print(f"Factura mensual de {cliente.nombre}: {factura} €")
+
+    # Calcular Facturación Mensual en la Empresa
+    empresa.calcularFacturacionMensual(cliente)
+
+    # Listar Vehículos Disponibles
+    empresa.listadoVehiculosDisponibles()
+
+    # Listar Trabajadores Disponibles
+    empresa.listadoTrabajadoresDisponibles()
+
+    # Listar Vehículos de la Empresa
+    empresa.listadoVehiculos()
+
+    # Listar Trabajadores de la Empresa
+    empresa.listadoTrabajadores()
+
+    # Listar Clientes de la Empresa
+    empresa.listadoClientes()
+
+    # Listar Pedidos de la Empresa
+    empresa.listadoPedidos()
+
+    # Listar Viajes de la Empresa
+    empresa.listadoViajes()
+
+    # Listar Pedidos Pendientes
+    empresa.listadoPedidosPendientes()

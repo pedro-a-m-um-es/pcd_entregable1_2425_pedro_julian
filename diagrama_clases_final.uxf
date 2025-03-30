@@ -694,9 +694,9 @@ m1= 1..n</panel_attributes>
     <panel_attributes>&lt;&lt;enum&gt;&gt;
 Combustible
 -
-GASOLINA = "GASOLINA"
-DIESEL = "DIESEL"
-ELECTRICO = "ELECTRICO"
+GASOLINA = 0
+DIESEL = 1
+ELECTRICO = 2
 bg=LIGHT_GRAY</panel_attributes>
     <additional_attributes/>
   </element>

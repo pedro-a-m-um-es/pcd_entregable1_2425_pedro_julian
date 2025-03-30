@@ -22,9 +22,9 @@ class ListaDestinos(Enum):
 
 
 class Combustible(Enum):
-    GASOLINA = "GASOLINA"
-    DIESEL = "DIESEL"
-    ELECTRICO = "ELECTRICO"
+    GASOLINA = 0
+    DIESEL = 1
+    ELECTRICO = 2
 
 
 class Persona(metaclass=ABCMeta):
@@ -67,7 +67,7 @@ class Pedido:
         # El peso no afecta al coste.
         elegido = set()
         coste = 0
-        if self.modalidadEnvio == ModalidadEnvio.DOMICILIO.value:
+        if self.modalidadEnvio == ModalidadEnvio.DOMICILIO:
             coste += 5
         for paquete in self.paquetes:
             if paquete.destino in elegido:
@@ -234,8 +234,7 @@ class Furgoneta(Vehiculo, Motorizado):
 
 
 class Ecologico(metaclass=ABCMeta):
-    def __init__(self, combustible, vatios):
-        self.combustible = combustible
+    def __init__(self, vatios):
         self.vatios = vatios
         # En el caso de la bicicleta electrica, el combustible es electrico y los vatios son los que consume.
         # En el caso de la bicicleta tradicional, no tiene ni combustible ni vatios, por lo que se le asigna None.
@@ -244,7 +243,7 @@ class Ecologico(metaclass=ABCMeta):
 class BicicletaTradicional(Vehiculo, Ecologico):
     def __init__(self, matricula, capacidad):
         Vehiculo.__init__(self, matricula, capacidad)
-        Ecologico.__init__(self, combustible=None, vatios=None)
+        Ecologico.__init__(self, vatios=None)
 
     def devolverDatos(self):
         print('Bicicleta tradicional:', self.matricula, ', Capacidad:', self.capacidad,
@@ -252,14 +251,14 @@ class BicicletaTradicional(Vehiculo, Ecologico):
 
 
 class BicicletaElectrica(Vehiculo, Motorizado, Ecologico):
-    def __init__(self, matricula, capacidad, combustible):
+    def __init__(self, matricula, capacidad, combustible, vatios):
         Vehiculo.__init__(self, matricula, capacidad)
         Motorizado.__init__(self, combustible)
-        Ecologico.__init__(self, combustible, vatios)
+        Ecologico.__init__(self, vatios)
 
     def devolverDatos(self):
         print('Bicicleta electrica:', self.matricula, ', Capacidad:', self.capacidad, ', Disponible:',
-              self.disponible, ', Consumo:', self.combustible, ', Vatios:', self.vatios)
+              self.disponible, ', Combustible:', self.combustible, ', Vatios:', self.vatios)
 
 # bien
 
@@ -400,41 +399,51 @@ class Empresa:
 
     # Hemos asignado un peso fijo a cada tipo de vehhiculo.
     def registrarVehiculo(self, matricula, tipo, combustible=None, vatios=None):
-        if tipo == 'CAMION':
-            if combustible == Combustible.GASOLINA.value or combustible == Combustible.DIESEL.value:
+        for vehiculo in self.vehiculos:
+            if vehiculo.matricula == matricula:
+                raise ValueError(
+                    f"Vehículo con matrícula '{matricula}' ya registrado.")
+
+        if tipo == "CAMION":
+            if combustible == Combustible.GASOLINA or combustible == Combustible.DIESEL:
                 vehiculo = Camion(matricula, 700, combustible)
             else:
                 raise ValueError(
                     f"Combustible '{combustible}' no valido para camion.")
 
-        elif tipo == 'FURGONETA':
-            if combustible == Combustible.GASOLINA.value or combustible == Combustible.DIESEL.value:
+        elif tipo == "FURGONETA":
+            if combustible == Combustible.GASOLINA or combustible == Combustible.DIESEL:
                 vehiculo = Furgoneta(matricula, 350, combustible)
             else:
                 raise ValueError(
                     f"Combustible '{combustible}' no valido para furgoneta.")
 
-        elif tipo == 'BICICLETA TRADICIONAL':
+        elif tipo == "BICICLETA TRADICIONAL":
             vehiculo = BicicletaTradicional(matricula, 20)
 
-        elif tipo == 'BICICLETA ELECTRICA':
-            if combustible == Combustible.ELECTRICO.value:
+        elif tipo == "BICICLETA ELECTRICA":
+            if combustible == Combustible.ELECTRICO or vatios != None:
                 vehiculo = BicicletaElectrica(
                     matricula, 40, combustible, vatios)
             else:
                 raise ValueError(
-                    f"Combustible '{combustible}' no valido para bicicleta electrica.")
+                    "Combustible {combustible} o vatios no validos para bicicleta electrica.")
 
         else:
             raise ValueError(f"Tipo de vehículo '{tipo}' no reconocido.")
         self.vehiculos.append(vehiculo)
+        return vehiculo
 
     def registrarTrabajador(self, nombre, direccion, dni, salario, rol):
-        if rol == 'CONDUCTOR':
+        for trabajador in self.trabajadores:
+            if trabajador.dni == dni:
+                raise ValueError(
+                    f"Trabajador con DNI '{dni}' ya registrado.")
+        if rol == "CONDUCTOR":
             trabajador = Conductor(nombre, direccion, dni, salario)
-        elif rol == 'AYUDANTE':
+        elif rol == "AYUDANTE":
             trabajador = Ayudante(nombre, direccion,  dni, salario)
-        elif rol == 'AMBOS':
+        elif rol == "AMBOS":
             trabajador = Ambos(nombre, direccion, dni, salario)
         else:
             raise ValueError(f"Rol de trabajador '{rol}' no valido.")
@@ -442,6 +451,9 @@ class Empresa:
         return trabajador
 
     def registrarCliente(self, nombre, direccion, dni):
+        for cliente in self.clientes:
+            if cliente.dni == dni:
+                raise ValueError(f"Cliente con DNI '{dni}' ya registrado.")
         cliente = Cliente(nombre, direccion, dni)
         self.clientes.append(cliente)
         return cliente
@@ -453,12 +465,12 @@ class Empresa:
     def listadoVehiculos(self):
         print('LISTADO DE VEHICULOS')
         for vehiculo in self.vehiculos:
-            vehiculo.devolverDatos()
+            vehiculo.devolverDatos(), print('Tipo:', vehiculo.__class__.__name__)
 
     def listadoTrabajadores(self):
         print('LISTADO DE TRABAJADORES')
         for trabajador in self.trabajadores:
-            trabajador.devolverDatos()
+            trabajador.devolverDatos(), print('Rol:', trabajador.__class__.__name__)
 
     def listadoClientes(self):
         print('LISTADO DE CLIENTES')
@@ -469,3 +481,50 @@ class Empresa:
         print('LISTADO DE PEDIDOS')
         for pedido in self.pedidos:
             pedido.devolverDatos()
+
+    def listadoViajes(self):
+        print('LISTADO DE VIAJES')
+        for viaje in self.viajes:
+            viaje.devolverDatos()
+
+    def listadoPedidosPendientes(self):
+        print('LISTADO DE PEDIDOS PENDIENTES')
+        for pedido in self.pedidos:
+            for paquete in pedido.paquetes:
+                if not paquete.entregado:
+                    print(pedido.id)
+                    break
+
+    def calcularFacturacionMensual(self, cliente):
+        factura_mensual = cliente.getPedidosMensuales()
+        print(f'Facturacion mensual de {cliente.nombre}: {factura_mensual}€')
+
+    def listadoVehiculosDisponibles(self):
+        vehiculos_disponibles = []
+        for vehiculo in self.vehiculos:
+            if vehiculo.disponible:
+                vehiculos_disponibles.append(vehiculo)
+        if vehiculos_disponibles:
+            for vehiculo in vehiculos_disponibles:
+                print(
+                    f"Vehículo disponible: {vehiculo.matricula}, Tipo: {vehiculo.__class__.__name__}")
+        else:
+            print("No hay vehículos disponibles.")
+
+    def listadoTrabajadoresDisponibles(self):
+        trabajadores_disponibles = []
+        for trabajador in self.trabajadores:
+            if trabajador.disponible:
+                trabajadores_disponibles.append(trabajador)
+        if trabajadores_disponibles:
+            for trabajador in trabajadores_disponibles:
+                print(
+                    f"Trabajador disponible: {trabajador.nombre}, DNI: {trabajador.dni} Rol: {trabajador.__class__.__name__}")
+        else:
+            print("No hay trabajadores disponibles.")
+
+    def listadoTrabajadoresDispoibles(self):
+        disponibles = []
+        for trabajador in self.trabajadores:
+            if trabajador.disponible:
+                disponibles.append(trabajador)
